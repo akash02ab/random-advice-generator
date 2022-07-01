@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@800&display=swap" rel="stylesheet">
+  
+  <title>Frontend Mentor | Advice generator app</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Manrope', sans-serif;
+    }
+    .container {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: hsl(218, 23%, 16%);
+    }
+    .card {
+      width: 80%;
+      height: 80%;
+      border-radius: 1rem;
+      padding: 1.5rem 1rem;
+      background-color: hsl(217, 19%, 24%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      position: relative;
+    }
+    .quote-id {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .quote-id p, .quote-id span {
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      color: hsl(150, 100%, 66%);
+    }
+    .quote {
+      text-align: center;
+      color: hsl(193, 38%, 86%);
+      height: 70%;
+      overflow: auto;
+    }
+    #divider-lg, #divider-sm {
+      width: 90%;
+      display: none;
+    }
+    .dice-btn {
+      width: 4rem;
+      height: 4rem;
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: hsl(150, 100%, 66%);
+      cursor: pointer;
+      position: absolute;
+      bottom: -64px;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .dice-btn:hover {
+      background-color: hsl(150, 95%, 75%);
+      box-shadow: 1px 1px 30px 15px hsla(150, 95%, 75%, 0.333);
+    }
+    @media screen and (max-width: 376px){
+      #divider-sm {
+        display: block;
+      }
+    }
+    @media screen and (min-width: 376px) {
+      .card {
+        max-width: 30rem;
+        max-height: 25rem;
+        width: 90%;
+        height: 100%;
+      }
+      #divider-lg {
+        display: block;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="quote-id">
+        <p>Advice</p>
+        <span id="advice-id">#</span>
+      </div>
+      <h1 class="quote" id="advice-text"></h1>
+      <img src="./images/pattern-divider-desktop.svg" alt="divider" id="divider-lg">
+      <img src="./images/pattern-divider-mobile.svg" alt="divider" id="divider-sm">
+      <button class="dice-btn" onclick="getQuote()">
+        <img src="./images/icon-dice.svg" alt="dice">
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const quoteId = document.getElementById("advice-id");
+    const quoteText = document.getElementById("advice-text");
+
+    const getRandomeAdvice = async () => {
+      const URL = "https://api.adviceslip.com/advice";
+      const response = await fetch(URL);
+      const data = await response.json();
+      return data;
+    }
+
+    const getQuote = () => {
+      getRandomeAdvice()
+      .then((data) => {
+        const slip = data.slip;
+        quoteId.innerText = `# ${slip.id}`;
+        quoteText.innerText = `"${slip.advice}"`;  
+      })
+      .catch((err) => console.error({status: "OOps!, something went wrong.", detail: err}));
+    }
+
+    window.onload = () => getQuote();
+  </script>
+</body>
+</html>
